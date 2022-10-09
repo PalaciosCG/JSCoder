@@ -7,7 +7,10 @@
 
 
 //INGRESO DE NUMERO
-let numeroConvertible = prompt("Precio a convertir")
+
+
+
+
 
 //TIPO DE MONEDA
 let moneda = prompt("Ingresá el tipo de moneda")
