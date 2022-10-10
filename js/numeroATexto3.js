@@ -1,5 +1,3 @@
-
-
 //INSTRUCCIONES DE LA FUNCTION
 let dataNumber = prompt("Número a convertir")
 
