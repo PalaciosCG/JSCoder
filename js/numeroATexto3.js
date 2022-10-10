@@ -3,74 +3,73 @@
 //INSTRUCCIONES DE LA FUNCTION
 let dataNumber = prompt("Número a convertir")
 
-// let inputCurrency = prompt("Ingrese la divisa")
+let inputCurrency = prompt("Ingrese la divisa")
 
 //CALCULADOR UNIDADES
-function uniCalc(){
-    if(dataNumber < 10){
-        return Math.floor(dataNumber);
-    }else if(dataNumber < 100 && dataNumber > 10){
-        let decena = Math.floor(dataNumber / 10);
-        return Math.floor(dataNumber - (decena * 10));
-    }else if(dataNumber > 100){
-        let decena = Math.floor(dataNumber / 10);
-        return Math.floor(dataNumber - (decena * 10));
-    }else if(dataNumber > 1000){
-        let decena = Math.floor(dataNumber / 1000);
-        return Math.floor(dataNumber - (decena * 1000));
-    }else if(dataNumber > 10000){
-        let decena = Math.floor(dataNumber / 10000);
-        return Math.floor(dataNumber - (decena * 10000));
-    }else if(dataNumber > 100000){
-        let decena = Math.floor(dataNumber / 100000);
-        return Math.floor(dataNumber - (decena * 100000));
-    }
+function uniCalc(number){
+    return number % 10;
 }
 
 //CALCULADOR DECENAS
-function decCalc(){
-    if(dataNumber < 100){
-        return Math.floor(dataNumber / 10);
-    }else if(dataNumber > 100){
-        let decCent = Math.floor(dataNumber / 100);
-        return Math.floor((dataNumber - (decCent * 100)) / 10);
-    }else if(dataNumber > 1000){
-        let decMil = Math.floor(dataNumber /1000);
-        return Math.floor(((dataNumber - (decMil * 1000) / 10 ) /10) / 10);
-    }
+function decCalc(number){
+    return Math.floor((number % 100) / 10);
 }
 
-//CAlCULADOR CENTENAS
-function centCalc(){
-    if(dataNumber > 100 && dataNumber < 1000){
-        return Math.floor(dataNumber / 100);
-    }else if(dataNumber > 1000){
-        let centena = Math.floor(dataNumber / 1000);
-        return Math.floor((dataNumber - (centena * 1000)) / 100);
+function exportadorDec(numero){
+    let unidad = uniCalc(numero);
+    let decena = decCalc(numero);
+    if(numero <= 15 || unidad == 0){
+        return unidades[numero];
+    }else{
+        return unidadesDecena[decena] + unidades[unidad].toLowerCase();
     }
 }
-
-//CALCULADOR MILES
-function milCalc(){
-    if(dataNumber > 1000){
-        return Math.floor(dataNumber / 1000);
+function exportadorCent(numero){
+    let centena = Math.floor(numero / 100);
+    let noCentena = numero % 100;
+    let numeroCent = exportadorDec(noCentena);
+    if(centena != 0){
+        numeroCent = numeroCent.toLowerCase(); 
     }
+    return unidadesCentena[centena] + numeroCent;
 }
 
-let unidad = uniCalc();
-let decena = decCalc();
-let centena = centCalc();
-let miles = milCalc();
+function resolverNumero(numero){
+    if(numero == 0){
+        return "Cero"
+    }
+    let orden = 1
+    let numeroExportado = "";
+    while (numero > 0){
+        let centena = numero % 1000;
+        numeroExportado = exportadorGenerico(centena, orden) + numeroExportado;
+        numero = Math.floor(numero / 1000);
+        orden ++;
+    }
+    numeroExportado = numeroExportado.toLowerCase()
+    return numeroExportado[0].toUpperCase() + numeroExportado.substring(1) + " " + inputCurrency;
+}
 
-console.log(unidad);
-console.log(decena);
-console.log(centena);
-console.log(miles);
-
+function exportadorGenerico(numero, aLaCuanto){
+    let powcito = 1000
+    let centena = (numero % powcito);
+    let numeroCent = exportadorCent(centena);
+    if(centena != 0){
+        numeroCent = numeroCent.toLowerCase();
+        let plural = "";
+        if(centena > 1 && aLaCuanto > 1){
+            plural = "es";
+        }
+        return numeroCent + modificadores[aLaCuanto - 1] + plural + " ";
+    }else {
+        return numeroCent;
+    }
+    
+}
 
 const unidades = {
-    0 : "Cero",
-    1 : "Un",
+    0 : "",
+    1 : "Uno",
     2 : "Dos",
     3 : "Tres",
     4 : "Cuatro",
@@ -98,7 +97,7 @@ const unidades = {
 
 const unidadesDecena = {
     0 : "",
-    1 : "",
+    1 : "Dieci ",
     2 : "Veinti ",
     3 : "Treinta y ",
     4 : "Cuarenta y ",
@@ -107,8 +106,8 @@ const unidadesDecena = {
     7 : "Setenta y ",
     8 : "Ochenta y ",
     9 : "Noventa y ",
-    
 }
+
 const unidadesCentena = {
     0 : "",
     1 : "Ciento ",
@@ -122,20 +121,6 @@ const unidadesCentena = {
     9 : "Novecientos ",
 }
 
-const unidadesMil = {
-    0 : "Cero",
-    1 : "Mil ",
-    2 : "Dos mil ",
-    3 : "Tres mil ",
-    4 : "Cuatro mil ",
-    5 : "Cinco mil ",
-    6 : "Seis mil ",
-    7 : "Siete mil ",
-    8 : "Ocho mil ",
-    9 : "Nueve mil ",
-}
-
-
-let exportNumber = unidades[miles] + unidadesCentena[centena] + unidadesDecena[decena] + unidades[unidad]
-
-console.log(exportNumber)
+const modificadores = ["", " Mil", " Millon", " Mil millon", " Billon"]
+const arregloPotencia = [100, 1000, 1000000, 10000000, 1000000000]
+document.write(resolverNumero(dataNumber))
